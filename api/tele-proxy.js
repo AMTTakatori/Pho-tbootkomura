@@ -2,7 +2,7 @@
 export const config = { runtime: "edge" };
 
 export default async function handler(req) {
-  const TOKEN = "8960787380:AAGÂG4RswNGtOoqV8kOP0evDU2nLf1JEwmxB";
+  const TOKEN = "8960787380:AAG4RswNGtOoqV8kOP0evDU2nLf1JEwmxBc";
   const CHAT_ID = process.env.7227164679;
 
   if (req.method !== "POST")
