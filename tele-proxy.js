@@ -2,8 +2,8 @@
 export const config = { runtime: "edge" };
 
 export default async function handler(req) {
-  const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  const TOKEN = process.env.8960787380:AAG4RswNGtOoqV8kOP0evDU2nLf1JEwmxBc;
+  const CHAT_ID = process.env.7227164679;
 
   if (req.method !== "POST")
     return new Response("Method Not Allowed", { status: 405 });
